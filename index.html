@@ -1,0 +1,80 @@
+﻿
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>和歌山県 南紀熊野ジオパーク見どころ＆トイレマップ</title>
+</head><body>
+<h1>和歌山県 南紀熊野ジオパーク見どころ＆トイレマップ</h1>
+<script type="module" src="https://js.sabae.cc/csv-map.js"></script>
+<csv-map id=map></csv-map>
+<div class=hint>赤：南紀熊野ジオパーク見どころ、青：温水洗浄付きトイレ、緑：温水洗浄無しトイレ<div>
+<button id=btnhere>現在位置を中心に表示</button>
+<hr>
+DATA: <a href=https://github.com/code4fukui/opendata-wakayama/>和歌山県オープンデータ on GitHub</a><br>
+App: <a href=https://github.com/code4fukui/wakayama-geoparkmap/>src on GitHub</a><br>
+</p><p>
+
+<script type="module" src="https://js.sabae.cc/QRCode.js"></script>
+<qr-code></qr-code>
+
+
+<script type="module">
+import { CSV } from "https://js.sabae.cc/CSV.js";
+
+const base = "https://code4fukui.github.io/opendata-wakayama/"
+const data1 = await CSV.fetchJSON(base + "ts4-file01duser143669.csv");
+const data2 = await CSV.fetchJSON(base + "geopark_sitelist.csv");
+
+const isWash = (wc) => {
+  for (let name in wc) {
+    if (name.indexOf("温水") >= 0 && parseInt(wc[name]) > 0) {
+      return true;
+    }
+  }
+  return false;
+};
+const addTitle = (data, title, url) => {
+  return data.map(i => Object.assign({ title, url }, i));
+};
+
+data1.forEach(i => i.color = isWash(i) ? "blue" : "green");
+data2.forEach(i => i.color = "red");
+const data = [
+  ...addTitle(data2, "南紀熊野ジオパーク見どころ", "https://nankikumanogeo.jp/"),
+  ...addTitle(data1, "和歌山県トイレマップ", "https://www.wakayama-kanko.or.jp/plan-your-trip/toilet-map/"),
+];
+
+map.value = data;
+
+btnhere.onclick = () => {
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    map.map.panTo(new L.LatLng(lat, lng));
+  });
+};
+</script>
+
+<style>
+body {
+  text-align: center;
+  margin: 0;
+  background-color: #f8f8f8;
+}
+.leaflet-popup-content th {
+  max-width: 150px;
+}
+.hint {
+  margin: .5em;
+}
+button {
+  margin: .5em;
+}
+h2 {
+  padding: 0;
+  margin: 0;
+}
+a {
+  color: gray !important;
+}
+</style>
+
+</body></html>
