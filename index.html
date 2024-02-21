@@ -35,8 +35,12 @@ const addTitle = (data, title, url) => {
   return data.map(i => Object.assign({ title, url }, i));
 };
 
-data1.forEach(i => i.color = isWash(i) ? "blue" : "green");
-data2.forEach(i => i.color = "red");
+// color
+//data1.forEach(i => i.color = isWash(i) ? "blue" : "green");
+//data2.forEach(i => i.color = "red");
+// icon
+data1.forEach(i => i.icon = isWash(i) ? "img/toiletshower2-icon.png" : "img/toilet-icon.png");
+data2.forEach(i => i.icon = "img/geopark-icon.png");
 const data = [
   ...addTitle(data2, "南紀熊野ジオパーク見どころ", "https://nankikumanogeo.jp/"),
   ...addTitle(data1, "和歌山県トイレマップ", "https://www.wakayama-kanko.or.jp/plan-your-trip/toilet-map/"),
